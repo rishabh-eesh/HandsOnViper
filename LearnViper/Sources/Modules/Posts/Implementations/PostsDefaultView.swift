@@ -14,6 +14,14 @@ class PostsDefaultView: BaseListController, PostsView {
     
     let cellId = String(describing: self)
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let ai = UIActivityIndicatorView(style: .large)
+        ai.tintColor = .black
+        ai.startAnimating()
+        ai.hidesWhenStopped = true
+        return ai
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,11 +30,15 @@ class PostsDefaultView: BaseListController, PostsView {
         
         collectionView.register(PostCell.self, forCellWithReuseIdentifier: cellId)
         
+        view.addSubview(activityIndicator)
+        activityIndicator.centerInSuperview()
+        
         presenter?.reload()
     }
     
     func reloadData() {
         DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
             self.collectionView.reloadData()
         }
     }
